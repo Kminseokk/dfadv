@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      던전앤파이터 모험단 검색 사이트
+    </title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="bootstrap, bootstrap5" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/icomoon/style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/flaticon/font/flaticon.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tiny-slider.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/aos.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="apple-touch-icon" sizes="76x76" href="{{ url_for('static', filename='./assets/img/apple-icon.png') }}">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
+    <link href="{{ url_for('static', filename='assets/css/nucleo-icons.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/nucleo-svg.css') }}"/>
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" >
+    <link id="pagestyle" href="{{url_for('static', filename='assets/css/material-dashboard.css')}}" rel="stylesheet"/>
+  </head>
+  <body>
+    <div class="site-mobile-menu site-navbar-target">
+      <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close">
+          <span class="icofont-close js-menu-toggle"></span>
+        </div>
+      </div>
+      <div class="site-mobile-menu-body"></div>
+    </div>
+
+    <nav class="site-nav">      
+        <div class="menu-bg-wrap">
+          <div class="site-navigation">
+            <a href="index" class="logo m-0 float-start">DUNFA.XYZ</a>
+            <ul
+              class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end"
+            >
+              <li class="active"><a href="index">메인 화면</a></li> 
+              <li><a href="rank">랭킹</a></li> <!-- 서비스 html 원본-->
+              <li><a href="data">분포 그래프(beta)</a></li> <!-- 서비스 html 원본-->
+              <li><a href="about">안내 사항</a></li>
+            </ul>
+            <a
+              href="#"
+              class="burger light me-auto float-end mt-1 site-menu-toggle js-menu-toggle d-inline-block d-lg-none"
+              data-toggle="collapse"
+              data-target="#main-navbar"
+            >
+              <span></span>
+            </a>
+          </div>    
+      </div>
+    </nav>
+      <div
+        class="hero page-inner overlay"
+        style="background-image: url('{{ url_for('static', filename=image_path) }}')"
+      >
+      <div class="container">
+        <div class="row justify-content-center align-items-center">
+          <div class="col-lg-12 text-center mt-2">
+            <h1 class="heading" data-aos="fade-up" id="adventureName">모험단 이름</h1>
+            <nav
+              aria-label="breadcrumb"
+              data-aos="fade-up"
+              data-aos-delay="200"
+            >
+            <h1 class="heading_re" data-aos="fade-up" id="repre_char">대표 캐릭터 정보가 없습니다.</h1>
+            <nav
+              aria-label="breadcrumb"
+              data-aos="fade-up"
+              data-aos-delay="200"
+            >
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var urlParams = new URLSearchParams(window.location.search);
+        var adventureName = urlParams.get('search');
+        var repre_char = {{ repre_char | tojson }};
+
+        if (adventureName) {
+          document.getElementById('adventureName').innerText = adventureName;
+        }
+        if (repre_char) {
+          repre_char_info = "서버 | " +  repre_char[0][2] + "\n대표 캐릭터 | " + repre_char[0][3] + "\n직업 | " + repre_char[0][5] + "\n명성 | " + repre_char[0][7];
+          document.getElementById('repre_char').innerText = repre_char_info;
+        }
+      });
+    </script>
+ 
+    <div class="search_section">
+              <div class="col-md-12">
+                <div class="header-search">
+                  <form id="char_searchForm" action="/search" method="POST">
+                    <select class="input-select" name="server_id">
+                      <option value="cain">카인</option>
+                      <option value="diregie">디레지에</option>
+                      <option value="siroco">시로코</option>
+                      <option value="prey">프레이</option>
+                      <option value="casillas">카시야스</option>
+                      <option value="hilder">힐더</option>
+                      <option value="anton">안톤</option>
+                      <option value="bakal">바칼</option>
+                    </select> 
+                    <input class="input" name="input_name" placeholder="캐릭터 이름을 입력해주세요. ">
+                    <button class="search-btn" type="button" onclick="char_performSearch()">SEARCH</button>
+                  </form>
+                </div>
+              </div>
+              
+              <!-- 검색 완료 문구를 표시할 영역 -->
+            <div id="searchResultMessage"></div>
+            <div id="addButtonContainer" style="display: none;">
+              <button id="addButton" onclick="addAdventure()">추가하기</button>
+          </div>
+          </div>
+            <script>
+              document.getElementById("char_searchForm").addEventListener("keypress", function(event) {
+                  if (event.key === "Enter") {
+                      event.preventDefault(); // 기본 엔터 동작 막기
+                      char_performSearch(); 
+                  }
+              });
+
+              document.addEventListener('DOMContentLoaded', function () {
+                var urlParams = new URLSearchParams(window.location.search);
+                var adventureName = urlParams.get('search');
+                document.getElementById("char_searchForm").insertAdjacentHTML('beforeend', '<input type="hidden" name="adventureName" value="' + adventureName + '">');
+              });
+
+              function char_performSearch() {
+                  var formData = new FormData(document.getElementById("char_searchForm"));                
+                  var xhr = new XMLHttpRequest();
+                  xhr.open("POST", "/search", true);
+                  xhr.onreadystatechange = function() {
+                      if (xhr.readyState == 4 && xhr.status == 200) {
+                          var result = xhr.responseText;
+                          displaySearchResult(result);
+                      }
+                  };
+                  xhr.send(formData);
+              }
+              
+              function displaySearchResult(result) {
+                var resultMessageContainer = document.getElementById("searchResultMessage");
+                resultMessageContainer.innerHTML = result;
+
+                if (result === "true") {
+                    resultMessageContainer.innerHTML = "<div>해당 모험단에 속한 캐릭터 입니다. 추가하시겠습니까?</div>";
+                    addButtonContainer.style.display = "block"; // '추가하기' 버튼 보이게
+                } else {
+                    resultMessageContainer.innerHTML = "<div>해당 모험단에 속한 캐릭터가 아닙니다.</div>";
+                    addButtonContainer.style.display = "none"; // 버튼 숨기기
+                }
+            } 
+            function addAdventure() {
+            var formData = new FormData(document.getElementById("char_searchForm"));
+            formData.append('adventureName', adventureName);
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/save", true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var saveResult = xhr.responseText;
+                    console.log("Adventure 추가 완료!");
+                if (saveResult === "save_true") {
+                    window.location.href = window.location.href; // 현재 주소로 리다이렉션
+                }
+                }
+            };
+            xhr.send(formData);
+          }
+          </script>      
+
+    <main class="main-content position-relative h-100 border-radius-lg ">
+      <div class="container-fluid py-4">
+        <div class="row">
+          <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+            <div class="card">
+              <div class="card-header p-3 pt-2">
+                <div class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
+                  <i class="material-icons opacity-10">weekend</i>
+                </div>
+                <div class="text-end pt-1">
+                  <p class="text-sm mb-0 text-capitalize">착용 중인 미스트기어 수</p>
+                  <h4 class="mb-0" id="mistGear_sum">N개</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+            <div class="card">
+              <div class="card-header p-3 pt-2">
+                <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                  <i class="material-icons opacity-10">person</i>
+                </div>
+                <div class="text-end pt-1">
+                  <p class="text-sm mb-0 text-capitalize">모험단 평균 명성</p>
+                  <h4 class="mb-0" id="fame_avg">NN,NNN</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+            <div class="card">
+              <div class="card-header p-3 pt-2">
+                <div class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                  <i class="material-icons opacity-10">person</i>
+                </div>
+                <div class="text-end pt-1">
+                  <p class="text-sm mb-0 text-capitalize">모험단 명성 총합</p>
+                  <h4 class="mb-0" id="fame_sum">NN,NNN</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-3 col-sm-6">
+            <div class="card">
+              <div class="card-header p-3 pt-2">
+                <div class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
+                  <i class="material-icons opacity-10">weekend</i>
+                </div>
+                <div class="text-end pt-1">
+                  <p class="text-sm mb-0 text-capitalize">어둑섬 클리어 수</p>
+                  <h4 class="mb-0" id="dark_land_sum">NN회</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col-lg-4 col-md-6 mt-4 mb-4">
+            <div class="card z-index-2 ">
+              <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                <div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
+                  <div class="chart">
+                    <canvas id="chart-Variance-fame" class="chart-canvas" height="170"></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <h6 class="mb-0 ">변동 명성 변화 그래프</h6>
+                <p class="text-sm ">퀸텀 카지노(익스)의 입장 명성을 기준으로 합니다.</p>
+                <hr class="dark horizontal">
+                <p class="text-sm mb-0">
+                  <i class="fa fa-check text-info" aria-hidden="true"></i>
+                  <span class="font-weight-bold ms-1">변동 명성</span>은 상위 30%에 속하는 명성입니다.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6 mt-4 mb-4">
+            <div class="card z-index-2  ">
+              <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                <div class="bg-gradient-success shadow-success border-radius-lg py-3 pe-1">
+                  <div class="chart">
+                    <canvas id="chart-adv-total" class="chart-canvas" height="170"></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <h6 class="mb-0 "> 모험단 명성 총합 1위</h6>
+                <p class="text-sm "><span class="font-weight-bolder">모험단 이름</span> 의 모험단이 1위 입니다. 추후 업데이트 예정입니다.</p>
+                <hr class="dark horizontal">
+                <p class="text-sm mb-0">
+                  <i class="fa fa-check text-info" aria-hidden="true"></i>
+                  <span class="font-weight-bold ms-1">선계 장비 업그레이드</span>가 되지 않은 캐릭터는 집계되지 않습니다.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 mt-4 mb-3">
+            <div class="card z-index-2 ">
+              <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                <div class="bg-gradient-dark shadow-dark border-radius-lg py-3 pe-1">
+                  <div class="chart">
+                    <canvas id="chart-adv-mean" class="chart-canvas" height="170"></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <h6 class="mb-0 ">모험단 명성 평균 1위</h6>
+                <p class="text-sm "><span class="font-weight-bolder">모험단 이름</span> 의 모험단이 1위 입니다. 추후 업데이트 예정입니다. </p>
+                <hr class="dark horizontal">
+                <p class="text-sm mb-0">
+                  <i class="fa fa-check text-info" aria-hidden="true"></i>
+                  <span class="font-weight-bold ms-1">캐릭터의 수가 7개 이하</span>인 모험단은 집계되지 않습니다.
+                </p>
+              </div>
+            </div>
+          </div>
+          
+        <!-- JavaScript -->
+        <script>
+          var fame_sum = {{fame_sum}}; // 서버에서 가져온 실제 fame_sum 값
+          var fame_avg = {{fame_avg}}; // 서버에서 가져온 실제 fame_avg값
+          var dark_land_sum = {{dark_land_sum}};
+          var mistGear_sum = {{mistGear_sum}};
+
+          // 명성을 표시하는 요소의 ID를 사용하여 해당 요소를 가져옴
+          var fameSumValueElement = document.getElementById('fame_sum');
+          var fameAvgValueElement = document.getElementById('fame_avg');
+          var darklandValueElement = document.getElementById('dark_land_sum');
+          var mistGearValueElement = document.getElementById('mistGear_sum');
+      
+          // 가져온 요소의 innerText 속성을 변경하여 명성 값을 표시
+          if (!isNaN(fame_sum)) {
+              fameSumValueElement.innerText = fame_sum.toLocaleString(); // 숫자 포맷팅
+          }
+          if (!isNaN(fame_avg)) {
+              fameAvgValueElement.innerText = fame_avg.toLocaleString(); // 숫자 포맷팅
+          }
+          if (!isNaN(dark_land_sum)) {
+              darklandValueElement.innerText = dark_land_sum.toLocaleString(); // 숫자 포맷팅
+          }
+          if (!isNaN(mistGear_sum)) {
+              mistGearValueElement.innerText = mistGear_sum.toLocaleString(); // 숫자 포맷팅
+          }
+
+      </script>  
+
+        </div>    
+        <div class="row mb-4">
+          <div class="col-lg-12 col-md-6 mb-md-0 mb-4">
+            <div class="card">
+              <div class="card-header pb-0">
+                <div class="row">
+                  <div class="col-lg-12 col-10">
+                    <h6>모험단 캐릭터 리스트                   
+                      <button class="dundam-update-btn" type="button" onclick="performSearch('dundam')">던담 업데이트</button>
+                      <button class="all-update-btn" type="button" onclick="performSearch('all')">업데이트</button>
+                    </h6>
+                    
+                    <p class="text-sm mb-0">
+                      <i class="fa fa-check text-info" aria-hidden="true"></i>
+                      <span class="font-weight-bold ms-1">스펙에 변화가 있다면</span> 업데이트를 눌러주세요. 해당 모험단의 캐릭터 전부 던담 정보를 제외한 정보가 업데이트 됩니다.
+                    </p>
+                    <p class="text-sm mb-0">
+                      <i class="fa fa-check text-info" aria-hidden="true"></i>
+                      <span class="font-weight-bold ms-1">업데이트 기능은</span> 시간이 소요 됩니다. 던담의 경우 1분 이내의 시간이 소요되고, 캐릭터가 많을수록
+                      많은 시간이 요구됩니다.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <script>
+                function performSearch(buttonType) {
+                    const button = (buttonType === 'all') ? document.querySelector('.all-update-btn') : document.querySelector('.dundam-update-btn');
+                    button.disabled = true;
+            
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const searchValue = urlParams.get('search');
+            
+                    console.log('searchValue:', searchValue);
+            
+                    if (searchValue) {
+                        if (buttonType === 'all') {
+                            sendSearchValueToFlask(searchValue, '/all_update', button);
+                        } else if (buttonType === 'dundam') {
+                            sendSearchValueToFlask(searchValue, '/dun_update', button);
+                        } else {
+                            console.error('올바르지 않은 버튼 타입입니다.');
+                        }
+                    } else {
+                        console.error('URL에서 검색 매개변수를 찾을 수 없습니다.');
+                    }
+                }
+            
+                function sendSearchValueToFlask(searchValue, endpoint, button) {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', endpoint, true);
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+            
+                    const data = JSON.stringify({ searchValue: searchValue });
+            
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState == 4) {
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                console.log("response",response)
+            
+                                if (response == true) {
+                                    location.reload(true);
+                                } else {
+                                    console.error('업데이트에 실패했습니다.');
+                                }
+                            } catch (error) {
+                                console.error('응답을 파싱하는 중 에러 발생:', error);
+                            } finally {
+                                // 서버 응답 후 버튼 활성화
+                                button.disabled = false;
+                            }
+                        }
+                    };            
+                    // 데이터 전송
+                    xhr.send(data);
+                }
+            </script>
+            
+              <div class="card-body px-0 pb-2">
+                <div class="table-responsive">
+                  <table class="table align-items-center mb-0" >
+                    <thead>
+                      <tr>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">서버</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">캐릭터명</th>
+                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">뿌리 직업</th>
+                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">직업 명</th>
+                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">성장 레벨</th>
+                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">명성</th>
+                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">던담 정보</th>
+                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">미기 수</th>
+                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">커스텀 수</th>
+                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">시브</th>
+                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">나비</th>
+                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">오라</th>
+                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">칭호</th>
+                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">어득섬 클수</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for row in result %}
+                        <tr>
+                          <td>
+                            <div class="d-flex px-2 py-1">
+                              <div>
+                              </div>
+                              <div class="d-flex flex-column justify-content-center">
+                                <h6 class="mb-0 text-sm" {% if '억' in row[8] %}style="color: rgba(117, 152, 255, 1);"{% elif '만' in row[8] %}style="color: rgba(255, 113, 170, 0.81);"{% endif %}> {{ row[2]}}</h6>  <!-- 서버명 -->
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="avatar-group mt-2">
+                              <h6 class="mb-0 text-sm" {% if '억' in row[8] %}style="color: rgba(117, 152, 255, 1);"{% elif '만' in row[8] %}style="color: rgba(255, 113, 170, 0.81);"{% endif %}> {{ row[3]}}</h6> <!-- 캐릭터명 -->
+                            </div>
+                          </td>
+                          {% for col_index in range(4, 16) %}
+                            <td class="align-middle text-center text-sm">
+                              <span class="text-xs font-weight-bold" {% if '억' in row[8] %}style="color: rgba(117, 152, 255, 1);"{% elif '만' in row[8] %}style="color: rgba(255, 113, 170, 0.81);"{% endif %}>
+                                {{ row[col_index] }}
+                              </span>
+                            </td>
+                          {% endfor %}
+                        </tr>
+                        <tr></tr> 
+                      {% endfor %}                     
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="site-footer">
+            <div class="container">
+              <div class="row">
+                <div class="col-lg-4">
+                  <div class="widget">
+                    <h2>DUNFA.xyz</h2>
+                    <address>Design_By_Potion</address>
+                    <ul class="list-unstyled links">
+                      <li>
+                        <a href="mailto:info@mydomain.com">info@mydomain.com</a>
+                      </li>
+                      <li>© 2024 dunfa.xyz All rights reserved.</li>
+                      <li>This site is not associated with NEXON Korea. Data sourced from NEOPLE OpenAPI.</li>
+                    </ul>
+                  </div>
+                </div>                             
+        </div>
+    </main>
+    <script src="{{ url_for('static', filename='assets/js/core/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/core/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/plugins/perfect-scrollbar.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/plugins/smooth-scrollbar.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/plugins/chartjs.min.js') }}"></script>
+
+    <script>
+      var ctx = document.getElementById("chart-Variance-fame").getContext("2d");
+  
+      new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: ["12/21", "12/28", "1/4", "1/11", "1/18", "1/25"],
+          datasets: [{
+            label: "변동 명성",
+            tension: 0,
+            borderWidth: 0,
+            pointRadius: 5,
+            pointBackgroundColor: "rgba(255, 255, 255, .8)",
+            pointBorderColor: "transparent",
+            borderColor: "rgba(255, 255, 255, .8)",
+            borderColor: "rgba(255, 255, 255, .8)",
+            borderWidth: 4,
+            backgroundColor: "transparent",
+            fill: true,
+            data: [50500, 51000, 51500, 52000, 52000, 52000],
+            maxBarThickness: 6
+  
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false,
+            }
+          },
+          interaction: {
+            intersect: false,
+            mode: 'index',
+          },
+          scales: {
+            y: {
+              grid: {
+                drawBorder: false,
+                display: true,
+                drawOnChartArea: true,
+                drawTicks: false,
+                borderDash: [5, 5],
+                color: 'rgba(255, 255, 255, .2)'
+              },
+              ticks: {
+                display: true,
+                color: '#f8f9fa',
+                padding: 10,
+                font: {
+                  size: 14,
+                  weight: 300,
+                  family: "Roboto",
+                  style: 'normal',
+                  lineHeight: 2
+                },
+              }
+            },
+            x: {
+              grid: {
+                drawBorder: false,
+                display: false,
+                drawOnChartArea: false,
+                drawTicks: false,
+                borderDash: [5, 5]
+              },
+              ticks: {
+                display: true,
+                color: '#f8f9fa',
+                padding: 10,
+                font: {
+                  size: 14,
+                  weight: 300,
+                  family: "Roboto",
+                  style: 'normal',
+                  lineHeight: 2
+                },
+              }
+            },
+          },
+        },
+      });
+
+      var ctx2 = document.getElementById("chart-adv-total").getContext("2d");
+  
+      new Chart(ctx2, {
+        type: "bar",
+        data: {
+          labels: ["임시1", "임시2", "임시3", "임시4", "임시5", "임시6"],
+          datasets: [{
+            label: "총합 명성",
+            tension: 0.4,
+            borderWidth: 0,
+            borderRadius: 4,
+            borderSkipped: false,
+            backgroundColor: "rgba(255, 255, 255, .8)",
+            data: [50300, 50500, 51000, 51500, 52000, 52000],
+            maxBarThickness: 6
+          }, ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false,
+            }
+          },
+          interaction: {
+            intersect: false,
+            mode: 'index',
+          },
+          scales: {
+            y: {
+              beginAtZero: false,
+              suggestedMin: 50000,
+              suggestedMax: 53000, // y값 최대값 조절하는 곳
+              grid: {
+                drawBorder: false,
+                display: true,
+                drawOnChartArea: true,
+                drawTicks: false,
+                borderDash: [5, 5],
+                color: 'rgba(255, 255, 255, .2)'
+              },
+              ticks: {
+                padding: 10,
+                font: {
+                  size: 14,
+                  weight: 300,
+                  family: "Roboto",
+                  style: 'normal',
+                  lineHeight: 2
+                },
+                color: "#fff"
+              },
+            },
+            x: {
+              grid: {
+                drawBorder: false,
+                display: true,
+                drawOnChartArea: true,
+                drawTicks: false,
+                borderDash: [5, 5],
+                color: 'rgba(255, 255, 255, .2)'
+              },
+              ticks: {
+                display: true,
+                color: '#f8f9fa',
+                padding: 10,
+                font: {
+                  size: 14,
+                  weight: 300,
+                  family: "Roboto",
+                  style: 'normal',
+                  lineHeight: 2
+                },
+              }
+            },
+          },
+        },
+      });
+  
+      var ctx = document.getElementById("chart-adv-mean").getContext("2d");
+  
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: ["임시1", "임시2", "임시3", "임시4", "임시5", "임시6"],
+          datasets: [{
+            label: "총합 명성",
+            tension: 0.4,
+            borderWidth: 0,
+            borderRadius: 4,
+            borderSkipped: false,
+            backgroundColor: "rgba(255, 255, 255, .8)",
+            data: [50300, 50500, 51000, 51500, 52000, 52000],
+            maxBarThickness: 6
+          }, ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false,
+            }
+          },
+          interaction: {
+            intersect: false,
+            mode: 'index',
+          },
+          scales: {
+            y: {
+              beginAtZero: false,
+              suggestedMin: 50000,
+              suggestedMax: 53000, // y값 최대값 조절하는 곳
+              grid: {
+                drawBorder: false,
+                display: true,
+                drawOnChartArea: true,
+                drawTicks: false,
+                borderDash: [5, 5],
+                color: 'rgba(255, 255, 255, .2)'
+              },
+              ticks: {
+                padding: 10,
+                font: {
+                  size: 14,
+                  weight: 300,
+                  family: "Roboto",
+                  style: 'normal',
+                  lineHeight: 2
+                },
+                color: "#fff"
+              },
+            },
+            x: {
+              grid: {
+                drawBorder: false,
+                display: true,
+                drawOnChartArea: true,
+                drawTicks: false,
+                borderDash: [5, 5],
+                color: 'rgba(255, 255, 255, .2)'
+              },
+              ticks: {
+                display: true,
+                color: '#f8f9fa',
+                padding: 10,
+                font: {
+                  size: 14,
+                  weight: 300,
+                  family: "Roboto",
+                  style: 'normal',
+                  lineHeight: 2
+                },
+              }
+            },
+          },
+        },
+      });
+    </script>
+    <script>
+      var win = navigator.platform.indexOf('Win') > -1;
+      if (win && document.querySelector('#sidenav-scrollbar')) {
+        var options = {
+          damping: '0.5'
+        }
+        Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+      }
+    </script>
+  </body>
+  
+  <!-- </html> -->
+    <!-- Preloader -->
+    <div id="overlayer"></div>
+    <div class="loader">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/tiny-slider.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/aos.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/counter.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+</html>
