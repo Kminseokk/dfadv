@@ -33,6 +33,11 @@ def data():
     return render_template('wait_page.html')
     # return render_template('data.html')
 
+@app.route('/admin')
+def admin():
+    return render_template('admin_page.html')
+    # return render_template('data.html')
+
 # 404 Not Found 오류 핸들링
 @app.errorhandler(404)
 def page_not_found(e):
@@ -175,5 +180,8 @@ def dun_update():
     return dun_update_result
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000, debug=True)
+    
+# if __name__ == '__main__':
+#     app.run(debug=True)
