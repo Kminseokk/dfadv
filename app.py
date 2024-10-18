@@ -1,4 +1,3 @@
-#ADMIN 
 from flask import Flask, request, render_template, jsonify
 import mysql.connector
 from dun_aegi.i_class_data import get_job_id
